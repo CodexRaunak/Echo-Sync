@@ -31,7 +31,7 @@ const sendMessage = (message) => {
 // Send file changes (diffs) to the server
 const sendFileEdit = (newContent) => {
     sendMessage({
-        type: 'file-edit',
+        type: 'file-update',
         content: newContent,
         clientId,
     });
@@ -79,7 +79,7 @@ const applyDiffs = (diffs) => {
     localFileContent = updatedContent;
 
     // Update the text area with new content
-    document.getElementById('messageInput').value = updatedContent;
+    // document.getElementById('messageInput').value = updatedContent;
 };
 
 // Helper function to update cursor position visually
@@ -98,4 +98,60 @@ const getLineAndColumn = (textarea, position) => {
 };
 
 
+// --------------------------
 
+
+// const WebSocket = require('ws');
+// const readline = require('readline');
+
+// const socket = new WebSocket('ws://localhost:8080');
+// const clientId = Math.random().toString(36).substring(2, 15);
+
+// // When connected to WebSocket server
+// socket.onopen = () => {
+//     console.log('Connected to the WebSocket server');
+//     promptUser(); // Start prompting user input
+// };
+
+// // Handle incoming WebSocket messages
+// socket.onmessage = (event) => {
+//     const data = JSON.parse(event.data);
+//     console.log('Received data:', data);
+//     // Handle diffs and cursor positions if needed
+    
+// };
+// const sendMessage = (message) => {
+//     socket.send(JSON.stringify(message));
+// };
+
+// // Create readline interface for terminal input
+// const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout
+// });
+
+// // Function to send file changes (diffs) to the server
+// const sendFileEdit = (newContent) => {
+//     sendMessage({
+//         type: 'file-edit',
+//         content: newContent,
+//         clientId,
+//     });
+// };
+
+// // Function to prompt user input
+// const promptUser = () => {
+//     rl.question('Enter text: ', (input) => {
+//         if (input === 'exit') {
+//             socket.close();
+//             rl.close();
+//             return;
+//         }
+
+//         sendFileEdit(input);
+//         promptUser();
+//     });
+// };
+
+// // Start prompting user for input
+// promptUser();

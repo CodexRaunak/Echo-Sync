@@ -11,7 +11,7 @@ let debounceTimer = null;   // Timer for debouncing file changes
 
 const debounceDelay = 100; // Adjust this value as needed
 
-const openFile = (filePath) => {
+const openFile = (filePath,editor) => {
   const fullPath = path.resolve(filePath);
   if (fs.existsSync(fullPath)) {
     console.log(`Editing file: ${fullPath}`);
@@ -35,7 +35,7 @@ const openFile = (filePath) => {
     });
 
     // Open the file in an editor (Notepad in this example)
-    const vimProcess = spawn("vim", [fullPath], {
+    const vimProcess = spawn(editor, [fullPath], {
       stdio: "inherit" // Allows Vim to take control of the terminal
     });
 
@@ -73,46 +73,46 @@ const syncFileChanges = (filePath) => {
   });
 };
 
-// Client-side WebSocket code to receive and apply changes
-// const startClient = (serverURL) => {
-//   socket = new WebSocket(serverURL);
+//Client-side WebSocket code to receive and apply changes
+const startClient = (serverURL) => {
+  socket = new WebSocket(serverURL);
 
-//   socket.onopen = () => {
-//     console.log("Connected to WebSocket server");
-//   };
+  socket.onopen = () => {
+    console.log("Connected to WebSocket server");
+  };
 
-//   socket.onmessage = (event) => {
-//     const message = JSON.parse(event.data);
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
 
-//     if (message.type === "file-update" && message.clientId !== clientId) {
-//       console.log(`Received update for file: ${message.filename}`);
-//       console.log("Updated content:", message.content);
+    if (message.type === "file-update" && message.clientId !== clientId) {
+      console.log(`Received update for file: ${message.filename}`);
+      console.log("Updated content:", message.content);
 
-//       // Prevent infinite loop by marking this as a remote update
-//       isRemoteUpdate = true;
+      // Prevent infinite loop by marking this as a remote update
+      isRemoteUpdate = true;
 
-//       // Overwrite the local file with the received content
-//       fs.writeFile(message.filename, message.content, (err) => {
-//         if (err) {
-//           console.error("Error updating file:", err);
-//         } else {
-//           console.log(`File ${message.filename} updated successfully.`);
-//         }
-//       });
-//     }
-//   };
-// };
-const startClient = () => {
-  const serverURL = 'ws://localhost:8080'; // Replace with your server URL
-  const clientProcess = spawn('node', ['../src/network/client.js', serverURL], { stdio: 'inherit' });
-
-  clientProcess.on('error', (err) => {
-    console.error('Failed to start client:', err);
-  });
-
-  clientProcess.on('exit', (code) => {
-    console.log(`WebSocket client exited with code ${code}`);
-  });
+      // Overwrite the local file with the received content
+      fs.writeFile(message.filename, message.content, (err) => {
+        if (err) {
+          console.error("Error updating file:", err);
+        } else {
+          console.log(`File ${message.filename} updated successfully.`);
+        }
+      });
+    }
+  };
 };
+// const startClient = () => {
+//   const serverURL = 'ws://localhost:8080'; // Replace with your server URL
+//   const clientProcess = spawn('node', ['../src/network/client.js', serverURL], { stdio: 'inherit' });
+
+//   clientProcess.on('error', (err) => {
+//     console.error('Failed to start client:', err);
+//   });
+
+//   clientProcess.on('exit', (code) => {
+//     console.log(`WebSocket client exited with code ${code}`);
+//   });
+// };
 
 module.exports = { openFile, syncFileChanges, startClient };

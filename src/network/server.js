@@ -14,8 +14,8 @@ wss.on("connection", (ws) => {
   // When a message is received from a client
   ws.on("message", (message) => {
     const parsedMessage = JSON.parse(message);
-
-    if (parsedMessage.type === 'file-edit') {
+    if (parsedMessage.type === 'file-update') {
+    
       console.log(`Received: ${message}`);
 
       // Calculate the diff between the current file content and the new content
